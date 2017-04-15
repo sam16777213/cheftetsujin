@@ -112,7 +112,7 @@ int main(int argc,const char **argv){
 	};
 	initialize();
 	getPose();
-	testPTP(100,100,100,0);
+	testPTP(50,50,10,0);
 	this_thread::sleep_for(chrono::seconds(3));
 	getPose();
 	info("disconnecting");
