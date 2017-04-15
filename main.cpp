@@ -19,6 +19,7 @@ void info(string message){
 
 static void setPTP(float x,float y,float z, float r){
 	PTPCmd d;
+	
 	d.ptpMode=PTPMOVJXYZMode;
 	d.x=x;
 	d.y=y;
@@ -36,13 +37,13 @@ static void setInitialPTP(){
 static void openGrip(){
 	SetEndEffectorGripper(true, true, false, NULL);
 
-	this_thread::sleep_for(chrono::seconds(1));
+	//this_thread::sleep_for(chrono::seconds(1));
 }
 
 static void closeGrip(){
 	SetEndEffectorGripper(true, false, false, NULL);
 
-	this_thread::sleep_for(chrono::seconds(1));
+	//this_thread::sleep_for(chrono::seconds(1));
 }
 
 static void disableGrip(){
@@ -127,6 +128,7 @@ static void getPose(){
 	for(int i=0;i<4;i++){
 		m<<'['<<i<<']'<<pose.jointAngle[i]<<' ';
 	};
+	m<<" X="<<pose.x<<" Y="<<pose.y<<" Z="<<pose.z<<endl;
 	info(m.str());
 };
 
@@ -142,7 +144,10 @@ int main(int argc,const char **argv){
 		return -1;
 	};
 	initialize();
+
 	getPose();
+	DisconnectDobot();
+	return 0;
 	setPTP(179, -10, 27, 49);
 	openGrip();
 	setPTP(179, -10, 0.95, 49);
@@ -153,6 +158,7 @@ int main(int argc,const char **argv){
 	getPose();
 	info("disconnecting");
 	disableGrip();
+
 	DisconnectDobot();
 	return 0;
 };
