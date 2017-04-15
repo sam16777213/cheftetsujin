@@ -1,0 +1,19 @@
+
+cmake_minimum_required (VERSION 2.8.11)
+project(takoyaki)
+if(CMAKE_COMPILER_IS_GNUCXX)
+	add_definitions(-std=gnu++11)
+	#	include_directories(/usr/include/qt4/QtCore /usr/include/qt4/QtGui)
+endif()
+include_directories(ComPlatform)
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# find_package(Qt4 REQUIRED QtGui QtXml QtNetwork QtCore)
+find_package(Qt5Gui)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Network)
+file(GLOB sources "*.h" "*.cpp")
+add_executable(takoyaki ${sources})
+
+qt5_use_modules(takoyaki Gui Core Network SerialPort)
