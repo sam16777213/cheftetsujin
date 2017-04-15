@@ -26,10 +26,33 @@ static void setPTP(float x,float y,float z, float r){
 	d.r=r;
 	while(SetPTPCmd(&d,true,NULL)!=::DobotCommunicate_NoError) ;
 	info("moveCommand: X="+to_string(x)+" Y="+to_string(y)+" Z="+to_string(z)+" R="+to_string(r));
+	this_thread::sleep_for(chrono::seconds(1));
 };
 
 static void setInitialPTP(){
 	setPTP(170, 9, 27, 49);
+}
+
+static void openGrip(){
+	SetEndEffectorGripper(true, true, false, NULL);
+
+	this_thread::sleep_for(chrono::seconds(1));
+}
+
+static void closeGrip(){
+	SetEndEffectorGripper(true, false, false, NULL);
+
+	this_thread::sleep_for(chrono::seconds(1));
+}
+
+static void disableGrip(){
+	bool isCtrlEnabled, isGripped;
+
+	// Use only isGripped because we want to keep Gripped status
+	GetEndEffectorGripper(&isCtrlEnabled, &isGripped);
+	SetEndEffectorGripper(false, isGripped, false, NULL);
+
+	this_thread::sleep_for(chrono::seconds(1));
 }
 
 void initialize(){
@@ -120,11 +143,16 @@ int main(int argc,const char **argv){
 	};
 	initialize();
 	getPose();
-	setPTP(179,-10,0.95,0);
+	setPTP(179, -10, 27, 49);
+	openGrip();
+	setPTP(179, -10, 0.95, 49);
+	closeGrip();
 	this_thread::sleep_for(chrono::seconds(3));
 	setInitialPTP();
+	openGrip();
 	getPose();
 	info("disconnecting");
+	disableGrip();
 	DisconnectDobot();
 	return 0;
 };
