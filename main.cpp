@@ -16,6 +16,22 @@ void warn(string message){
 void info(string message){
 	vt0::log(cout,vt0::INFO,"takoyaki",message);
 };
+
+static void SetPTP(float x,float y,float z, float r){
+	PTPCmd d;
+	d.ptpMode=PTPMOVJXYZMode;
+	d.x=x;
+	d.y=y;
+	d.z=z;
+	d.r=r;
+	while(SetPTPCmd(&d,true,NULL)!=::DobotCommunicate_NoError) ;
+	info("moveCommand: X="+to_string(x)+" Y="+to_string(y)+" Z="+to_string(z)+" R="+to_string(r));
+};
+
+static void SetInitialPTP(){
+	SetPTP(170, 9, 27, 49);
+}
+
 void initialize(){
 	//Command timeout
 	SetCmdTimeout(3000);
@@ -25,7 +41,7 @@ void initialize(){
 
 	char deviceSN[64];
 	GetDeviceName(deviceSN, sizeof(deviceSN));
-	
+
 	info(QString::fromUtf8(deviceSN).toStdString());
 	char deviceName[64];
 	GetDeviceName(deviceName, sizeof(deviceName));
@@ -34,7 +50,7 @@ void initialize(){
 	GetDeviceVersion(&majorVersion, &minorVersion, &revision);
 	cout<<QString::number(majorVersion).toStdString()<<QString::number(minorVersion).toStdString()<<QString::number(revision).toStdString()<<endl;
 	//set the end effector parameters
-	
+
 	EndEffectorParams endEffectorParams;
 	memset(&endEffectorParams, 0, sizeof(endEffectorParams));
 	endEffectorParams.xBias = 71.6f;
@@ -77,9 +93,11 @@ void initialize(){
 	ptpJumpParams.jumpHeight = 20;
 	ptpJumpParams.zLimit = 150;
 	SetPTPJumpParams(&ptpJumpParams, false, NULL);
-	
+
+	SetInitialPTP();
 };
-void getPose(){
+
+static void getPose(){
 	Pose pose;
 	GetPose(&pose);
 	stringstream m;
@@ -88,17 +106,7 @@ void getPose(){
 	};
 	info(m.str());
 };
-void testPTP(float x,float y,float z, float r){
-	PTPCmd d;
-	d.ptpMode=PTPMOVJXYZMode;
-	d.x=x;
-	d.y=y;
-	d.z=z;
-	d.r=r;
-	while(SetPTPCmd(&d,true,NULL)!=::DobotCommunicate_NoError) ;
-	info("moveCommand: X="+to_string(x)+" Y="+to_string(y)+" Z="+to_string(z)+" R="+to_string(r));
 
-};
 int main(int argc,const char **argv){
 	//connect
 	if(argc<2) {
@@ -112,8 +120,9 @@ int main(int argc,const char **argv){
 	};
 	initialize();
 	getPose();
-	testPTP(50,50,10,0);
+	SetPTP(179,-10,0.95,0);
 	this_thread::sleep_for(chrono::seconds(3));
+	SetInitialPTP();
 	getPose();
 	info("disconnecting");
 	DisconnectDobot();
