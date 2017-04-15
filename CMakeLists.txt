@@ -6,7 +6,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 	#	include_directories(/usr/include/qt4/QtCore /usr/include/qt4/QtGui)
 endif()
 include_directories(ComPlatform)
-
+set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # find_package(Qt4 REQUIRED QtGui QtXml QtNetwork QtCore)

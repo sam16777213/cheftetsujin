@@ -7,8 +7,8 @@
 
 int DobotExec(void)
 {
+	
     CDobot::instance()->exec();
-
     return 0;
 }
 
