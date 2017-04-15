@@ -17,7 +17,7 @@ void info(string message){
 	vt0::log(cout,vt0::INFO,"takoyaki",message);
 };
 
-static void SetPTP(float x,float y,float z, float r){
+static void setPTP(float x,float y,float z, float r){
 	PTPCmd d;
 	d.ptpMode=PTPMOVJXYZMode;
 	d.x=x;
@@ -28,8 +28,8 @@ static void SetPTP(float x,float y,float z, float r){
 	info("moveCommand: X="+to_string(x)+" Y="+to_string(y)+" Z="+to_string(z)+" R="+to_string(r));
 };
 
-static void SetInitialPTP(){
-	SetPTP(170, 9, 27, 49);
+static void setInitialPTP(){
+	setPTP(170, 9, 27, 49);
 }
 
 void initialize(){
@@ -94,7 +94,7 @@ void initialize(){
 	ptpJumpParams.zLimit = 150;
 	SetPTPJumpParams(&ptpJumpParams, false, NULL);
 
-	SetInitialPTP();
+	setInitialPTP();
 };
 
 static void getPose(){
@@ -120,9 +120,9 @@ int main(int argc,const char **argv){
 	};
 	initialize();
 	getPose();
-	SetPTP(179,-10,0.95,0);
+	setPTP(179,-10,0.95,0);
 	this_thread::sleep_for(chrono::seconds(3));
-	SetInitialPTP();
+	setInitialPTP();
 	getPose();
 	info("disconnecting");
 	DisconnectDobot();
